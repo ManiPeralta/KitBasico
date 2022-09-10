@@ -1,0 +1,16 @@
+﻿@inherits UmbracoViewPage<ISEoelement>
+@{
+  Settings generalSettings = (Settings)Umbraco.ContentAtRoot().DescendantsOrSelfOfType("settings").FirstOrDefault();
+
+  var logo = generalSettings.Logo;
+  var favicon = generalSettings.Favicon;
+  var websiteName = generalSettings.WebsiteName;
+  var websiteDescription = generalSettings.WebsiteDescription;
+  var faviconUrl = string.Empty;
+  if(favicon != null){
+    faviconUrl = favicon.Url();
+  }
+
+  @* var seoTitle = Model.Alias; *@
+}
+

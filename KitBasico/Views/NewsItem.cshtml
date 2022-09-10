@@ -1,0 +1,63 @@
+﻿@using Umbraco.Cms.Web.Common.PublishedModels;
+@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage<ContentModels.NewsItem>
+@using ContentModels = Umbraco.Cms.Web.Common.PublishedModels;
+@{
+    Layout = "MasterPage.cshtml";
+
+    //Settings generalSettings = (Settings)Umbraco.ContentAtRoot().DescendantsOrSelfOfType("settings").FirstOrDefault();
+
+    //var fotoOrigen = ""; //generalSettings.URlbase;
+    //var fotoTemporral = "cactus.jpg";
+
+    ////var siteUrl = Request.Url.GetLeftPart(UriPartial.Authority);
+    var thumbnail = Model.MainPicture != null ? Model.MainPicture.GetCropUrl("Thumbnail") : "";
+    var mainPicture = Model.MainPicture != null ? Model.MainPicture.GetCropUrl("Medium") : "";
+
+    var related = Model.RelatedNewsItem;
+    var relatedCount = related.Count() ;
+    var tags = Model.Categories != null ? Model.Categories : null;
+}
+
+<section class="mp">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12 pt-3">
+                <h1>@Model.Title</h1>
+                <p>By @Model.Author</p>
+            </div>
+            <div class="col-md-12">
+                <p>@Model.DatePublished.ToString("d MMM yyyy") | @string.Join(",", tags)</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<section class="mp">
+    <div class="container">
+
+        <div class="row">
+            <div class="col-md-8 pl-0">
+                @if (mainPicture != null)
+                {
+                    <div class="mb-4 pl-3 pr-3"><img class="w-100" src="@mainPicture" alt="Alternate Text" /> </div>
+                }
+
+                
+                <div class="mb-4 pl-3 pr-3">@Model.TextContent</div>
+            </div>
+            <div class="col-md-4">
+                
+                @if (related != null && relatedCount > 0)
+                {
+                    foreach (var block in related.)
+                    {
+                        @block.Content.ContentType.Alias
+                        var partialPath = $"BlockListModules/{block.Content.ContentType.Alias}";
+                        <partial name="@partialPath" model="@block" />
+                    }
+                }
+            </div>
+        </div>
+    </div>
+</section>

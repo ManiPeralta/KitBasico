@@ -1,0 +1,64 @@
+﻿@using Umbraco.Cms.Web.Common.PublishedModels;
+@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage<ContentModels.NewsFeed>
+@using ContentModels = Umbraco.Cms.Web.Common.PublishedModels;
+@using System.Web;
+@{
+    Layout = "MasterPage.cshtml";
+
+    Settings generalSettings = (Settings)Umbraco.ContentAtRoot().DescendantsOrSelfOfType("settings").FirstOrDefault();
+
+    var newsFeed = Model.DescendantsOrSelfOfType("newsFeed").FirstOrDefault();
+    var newsItems = newsFeed?.Children;
+
+    var categories = new List<string>();
+    if (Model.MainContent != null)
+    {
+        foreach (var block in Model.MainContent)
+        {
+            var partialPath = $"BlockListModules/{block.Content.ContentType.Alias}";
+            <partial name="@partialPath" model="@block" />
+        }
+    }
+    
+    <section class="">
+        <div class="container pt-5 pb-5">
+            <div class="row p-2">
+                <div class="col-md-8">
+                    <div class="row">
+                        @if(newsItems != null)
+                        {
+                            @foreach (var item in newsItems)
+                            {
+                                NewsItem newsItem = (NewsItem)item;
+                                var thumbnail = newsItem.Thumbnail != null ? newsItem.Thumbnail.GetCropUrl("Thumbnail") : "";
+                                <div class="col-md-2 mb-2 p-2 bg-light">
+                                    <a href="@newsItem.Url()" class="text-dark">
+                                        @if (!string.IsNullOrEmpty(thumbnail)){
+                                            <img class="card-img-top thumbnail-small" alt="Thumbnail" src="@thumbnail" data-holder-rendered="true">
+                                        }
+                                        else{
+                                            <div class="card-img-top thumbnail-small bg-dark" data-holder-rendered="true"></div>
+                                        }
+                                        
+                                    </a>
+                                </div>
+                                <div class="col-md-10 mb-2  bg-light">
+                                    <div class="card-body">
+                                        <h3><a href="@newsItem.Url()" class="text-dark">@newsItem.Name</a></h3>
+                                        <p class="card-text">@newsItem.Slogan</p>
+
+                                    </div>
+                                </div>
+                            }
+                        }
+
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="row">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+}
